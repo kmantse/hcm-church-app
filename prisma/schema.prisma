@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Member {
+  id               String       @id @default(cuid())
+  firstName        String
+  lastName         String
+  email            String?      @unique
+  phone            String?
+  gender           String?
+  dateOfBirth      DateTime?
+  address          String?
+  city             String?
+  occupation       String?
+  maritalStatus    String?
+  membershipDate   DateTime?
+  membershipStatus String       @default("ACTIVE")
+  photo            String?
+  notes            String?
+  attendance       Attendance[]
+  followUps        FollowUp[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model Visitor {
+  id          String       @id @default(cuid())
+  firstName   String
+  lastName    String
+  email       String?
+  phone       String?
+  address     String?
+  gender      String?
+  invitedBy   String?
+  purpose     String?
+  notes       String?
+  attendance  Attendance[]
+  visits      Visit[]
+  followUps   FollowUp[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Visit {
+  id        String   @id @default(cuid())
+  visitorId String
+  visitor   Visitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  visitDate DateTime @default(now())
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model Programme {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  type        String       @default("SERVICE")
+  date        DateTime
+  startTime   String?
+  endTime     String?
+  venue       String?
+  notes       String?
+  attendance  Attendance[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Attendance {
+  id           String    @id @default(cuid())
+  programmeId  String
+  programme    Programme @relation(fields: [programmeId], references: [id], onDelete: Cascade)
+  memberId     String?
+  member       Member?   @relation(fields: [memberId], references: [id])
+  visitorId    String?
+  visitor      Visitor?  @relation(fields: [visitorId], references: [id])
+  attendeeType String    @default("MEMBER")
+  checkInTime  DateTime  @default(now())
+  notes        String?
+  createdAt    DateTime  @default(now())
+}
+
+model FollowUp {
+  id            String    @id @default(cuid())
+  memberId      String?
+  member        Member?   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  visitorId     String?
+  visitor       Visitor?  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  personType    String    @default("MEMBER")
+  type          String    @default("CALL")
+  subject       String
+  notes         String?
+  feedback      String?
+  outcome       String?
+  status        String    @default("SCHEDULED")
+  scheduledDate DateTime?
+  completedDate DateTime?
+  assignedTo    String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Registration {
+  id             String   @id @default(cuid())
+  firstName      String
+  lastName       String
+  email          String?
+  phone          String?
+  gender         String?
+  dateOfBirth    DateTime?
+  address        String?
+  city           String?
+  occupation     String?
+  maritalStatus  String?
+  howDidYouHear  String?
+  prayerRequest  String?
+  status         String   @default("PENDING")
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cd \"C:\\\\hcm-app\"; node test-db.mjs; echo \"exit: $LASTEXITCODE\")",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:3000/api/programmes\" -UseBasicParsing | Select-Object -ExpandProperty Content | ConvertFrom-Json | ForEach-Object { \"$\\($_.title\\) - $\\($_.type\\)\" } 2>&1)",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:3000/dashboard\" -UseBasicParsing)",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:3000/api/programmes\" -UseBasicParsing)",
+      "PowerShell($prog = Invoke-WebRequest -Uri \"http://localhost:3000/api/programmes\" -UseBasicParsing | Select-Object -ExpandProperty Content | ConvertFrom-Json | Select-Object -First 1; Write-Host \"ID: $\\($prog.id\\)\"; Write-Host \"Title: $\\($prog.title\\)\")",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:3000/api/reports/attendance\" -UseBasicParsing)",
+      "PowerShell(node -e \"const m = require\\('jspdf-autotable'\\); console.log\\('default:', typeof m.default, '| self:', typeof m\\); \" 2>&1)",
+      "PowerShell(node -e \"const m = require\\('jspdf-autotable'\\); const fn = m.default || m; console.log\\('fn type:', typeof fn\\); console.log\\('fn name:', fn.name || '\\(anon\\)'\\);\" 2>&1)",
+      "PowerShell(node -e \"const pkg = require\\('./node_modules/jspdf/package.json'\\); console.log\\(pkg.version\\);\" 2>&1)"
+    ]
+  }
+}
