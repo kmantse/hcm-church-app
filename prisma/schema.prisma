@@ -105,6 +105,17 @@ model FollowUp {
   updatedAt     DateTime  @updatedAt
 }
 
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("VIEWER")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Registration {
   id             String   @id @default(cuid())
   firstName      String

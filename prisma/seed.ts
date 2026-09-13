@@ -1,12 +1,43 @@
 import { PrismaClient } from "../app/generated/prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import path from "path";
+import bcrypt from "bcryptjs";
 
 const dbPath = path.resolve("dev.db").replace(/\\/g, "/");
 const adapter = new PrismaLibSql({ url: `file:${dbPath}` });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  // Default users
+  const adminPassword = await bcrypt.hash("Admin@1234", 12);
+  const pastorPassword = await bcrypt.hash("Pastor@1234", 12);
+
+  await prisma.user.upsert({
+    where: { email: "admin@church.com" },
+    update: {},
+    create: {
+      name: "System Admin",
+      email: "admin@church.com",
+      password: adminPassword,
+      role: "ADMIN",
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: "pastor@church.com" },
+    update: {},
+    create: {
+      name: "Senior Pastor",
+      email: "pastor@church.com",
+      password: pastorPassword,
+      role: "PASTOR",
+    },
+  });
+
+  console.log("Default users created:");
+  console.log("  Admin:  admin@church.com  /  Admin@1234");
+  console.log("  Pastor: pastor@church.com /  Pastor@1234");
+
   // Members
   const members = await Promise.all([
     prisma.member.create({
