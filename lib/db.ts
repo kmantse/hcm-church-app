@@ -3,8 +3,15 @@ import { PrismaLibSql } from "@prisma/adapter-libsql";
 import path from "path";
 
 function createPrisma() {
-  const dbPath = path.resolve(process.cwd(), "dev.db").replace(/\\/g, "/");
-  const adapter = new PrismaLibSql({ url: `file:${dbPath}` });
+  const tursoUrl = process.env.TURSO_DATABASE_URL;
+  const tursoToken = process.env.TURSO_AUTH_TOKEN;
+
+  const adapter = tursoUrl
+    ? new PrismaLibSql({ url: tursoUrl, authToken: tursoToken })
+    : new PrismaLibSql({
+        url: `file:${path.resolve(process.cwd(), "dev.db").replace(/\\/g, "/")}`,
+      });
+
   return new PrismaClient({ adapter });
 }
 
