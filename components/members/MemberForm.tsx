@@ -17,7 +17,7 @@ const schema = z.object({
   occupation: z.string().optional(),
   maritalStatus: z.string().optional(),
   membershipDate: z.string().optional(),
-  membershipStatus: z.string().default("ACTIVE"),
+  membershipStatus: z.string().min(1),
   notes: z.string().optional(),
 });
 

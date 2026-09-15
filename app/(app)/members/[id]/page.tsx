@@ -250,7 +250,17 @@ export default function MemberDetailPage() {
       <Modal open={showEdit} onClose={() => setShowEdit(false)} title="Edit Member" size="lg">
         <MemberForm
           defaultValues={{
-            ...member,
+            firstName: member.firstName,
+            lastName: member.lastName,
+            email: member.email ?? undefined,
+            phone: member.phone ?? undefined,
+            gender: member.gender ?? undefined,
+            address: member.address ?? undefined,
+            city: member.city ?? undefined,
+            occupation: member.occupation ?? undefined,
+            maritalStatus: member.maritalStatus ?? undefined,
+            notes: member.notes ?? undefined,
+            membershipStatus: member.membershipStatus,
             dateOfBirth: member.dateOfBirth ? member.dateOfBirth.split("T")[0] : undefined,
             membershipDate: member.membershipDate ? member.membershipDate.split("T")[0] : undefined,
           }}

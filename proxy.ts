@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, SESSION_COOKIE } from "@/lib/auth";
 
-// Public routes that never require auth
 const PUBLIC_PATHS = [
   "/login",
   "/register",
@@ -9,17 +8,15 @@ const PUBLIC_PATHS = [
   "/api/auth/logout",
 ];
 
-// Routes that start with these prefixes are public (public check-in pages)
 const PUBLIC_PREFIXES = [
-  "/checkin/",       // public self-check-in per programme
+  "/checkin/",
   "/_next/",
   "/favicon",
 ];
 
-// Public API endpoints used by the public-facing pages
 const PUBLIC_API_PATHS = [
-  "/api/registrations",  // POST - public registration submission
-  "/api/checkin",        // POST - public self check-in
+  "/api/registrations",
+  "/api/checkin",
 ];
 
 function isPublic(pathname: string): boolean {
@@ -28,17 +25,15 @@ function isPublic(pathname: string): boolean {
   return false;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isPublic(pathname)) return NextResponse.next();
 
-  // Allow GET on public API routes (programmes for public check-in pages)
   if (pathname.startsWith("/api/programmes") && request.method === "GET") {
     return NextResponse.next();
   }
 
-  // Allow POST on public submission APIs
   if (
     PUBLIC_API_PATHS.some((p) => pathname.startsWith(p)) &&
     request.method === "POST"
@@ -58,7 +53,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Attach user info to headers so API routes can read without re-verifying
   const response = NextResponse.next();
   response.headers.set("x-user-id", session.userId);
   response.headers.set("x-user-role", session.role);

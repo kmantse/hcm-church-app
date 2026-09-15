@@ -202,7 +202,12 @@ export default function MembersPage() {
           defaultValues={
             editMember
               ? {
-                  ...editMember,
+                  firstName: editMember.firstName,
+                  lastName: editMember.lastName,
+                  email: editMember.email ?? undefined,
+                  phone: editMember.phone ?? undefined,
+                  gender: editMember.gender ?? undefined,
+                  membershipStatus: editMember.membershipStatus,
                   dateOfBirth: undefined,
                   membershipDate: editMember.membershipDate
                     ? editMember.membershipDate.split("T")[0]
