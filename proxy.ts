@@ -9,19 +9,23 @@ const PUBLIC_PATHS = [
 ];
 
 const PUBLIC_PREFIXES = [
-  "/checkin/",
+  "/checkin",   // public check-in — both /checkin and /checkin/[id]
   "/_next/",
   "/favicon",
 ];
 
-const PUBLIC_API_PATHS = [
-  "/api/registrations",
+// API routes that are fully public (any method)
+const PUBLIC_API_PREFIXES = [
   "/api/checkin",
+  "/api/registrations",
+  "/api/members",   // needed for check-in search
+  "/api/visitors",  // needed for check-in search
+  "/api/programmes", // needed for check-in programme list
 ];
 
 function isPublic(pathname: string): boolean {
   if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p))) return true;
-  if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) return true;
+  if (PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))) return true;
   return false;
 }
 
@@ -30,14 +34,8 @@ export async function proxy(request: NextRequest) {
 
   if (isPublic(pathname)) return NextResponse.next();
 
-  if (pathname.startsWith("/api/programmes") && request.method === "GET") {
-    return NextResponse.next();
-  }
-
-  if (
-    PUBLIC_API_PATHS.some((p) => pathname.startsWith(p)) &&
-    request.method === "POST"
-  ) {
+  // Fully public API routes
+  if (PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
 
