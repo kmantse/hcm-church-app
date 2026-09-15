@@ -2,10 +2,21 @@ import { PrismaClient } from "../app/generated/prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import path from "path";
 import bcrypt from "bcryptjs";
+import { config } from "dotenv";
 
-const dbPath = path.resolve("dev.db").replace(/\\/g, "/");
-const adapter = new PrismaLibSql({ url: `file:${dbPath}` });
-const prisma = new PrismaClient({ adapter });
+config({ path: ".env.local" });
+config();
+
+function createPrisma() {
+  const tursoUrl = process.env.DATABASE_URL;
+  const tursoToken = process.env.DATABASE_AUTH_TOKEN;
+  const adapter = tursoUrl && tursoUrl.startsWith("libsql://")
+    ? new PrismaLibSql({ url: tursoUrl, authToken: tursoToken })
+    : new PrismaLibSql({ url: `file:${path.resolve("dev.db").replace(/\\/g, "/")}` });
+  return new PrismaClient({ adapter });
+}
+
+const prisma = createPrisma();
 
 async function main() {
   // Default users
