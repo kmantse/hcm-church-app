@@ -157,7 +157,7 @@ export default function ReportsPage() {
   const Icon = meta.icon;
 
   return (
-    <div className="p-6 max-w-3xl">
+    <div className="p-4 sm:p-6 max-w-3xl">
       <PageHeader
         title="Reports"
         description="Generate and download reports in PDF, CSV or Excel format"
@@ -236,7 +236,7 @@ export default function ReportsPage() {
           {/* Attendance filters */}
           {reportType === "attendance" && (
             <>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-slate-700 block mb-1.5">
                     Date From

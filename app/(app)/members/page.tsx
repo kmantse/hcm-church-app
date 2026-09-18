@@ -42,9 +42,7 @@ export default function MembersPage() {
     setMembers(data);
   }, [search, statusFilter]);
 
-  useEffect(() => {
-    fetchMembers();
-  }, [fetchMembers]);
+  useEffect(() => { fetchMembers(); }, [fetchMembers]);
 
   useEffect(() => {
     if (searchParams.get("action") === "new") {
@@ -58,11 +56,7 @@ export default function MembersPage() {
     try {
       const url = editMember ? `/api/members/${editMember.id}` : "/api/members";
       const method = editMember ? "PUT" : "POST";
-      await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
       setShowModal(false);
       setEditMember(null);
       fetchMembers();
@@ -78,7 +72,7 @@ export default function MembersPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       <PageHeader
         title="Members"
         description={`${members.length} member${members.length !== 1 ? "s" : ""} total`}
@@ -87,13 +81,11 @@ export default function MembersPage() {
             onClick={() => { setEditMember(null); setShowModal(true); }}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
           >
-            <Plus className="w-4 h-4" />
-            Add Member
+            <Plus className="w-4 h-4" /> Add Member
           </button>
         }
       />
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -116,133 +108,126 @@ export default function MembersPage() {
         </select>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        {members.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-            <Users className="w-10 h-10 mb-3 opacity-40" />
-            <p className="font-medium">No members found</p>
-            <p className="text-sm mt-1">Add your first member to get started</p>
+      {members.length === 0 ? (
+        <div className="bg-white rounded-xl border border-slate-200 flex flex-col items-center justify-center py-16 text-slate-400">
+          <Users className="w-10 h-10 mb-3 opacity-40" />
+          <p className="font-medium">No members found</p>
+          <p className="text-sm mt-1">Add your first member to get started</p>
+        </div>
+      ) : (
+        <>
+          {/* Mobile card list — hidden on md+ */}
+          <div className="md:hidden space-y-3">
+            {members.map((m) => (
+              <div key={m.id} className="bg-white rounded-xl border border-slate-200 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-sm shrink-0">
+                      {m.firstName[0]}{m.lastName[0]}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-semibold text-slate-900 truncate">{m.firstName} {m.lastName}</p>
+                      <p className="text-xs text-slate-500 truncate">{m.email || m.phone || "—"}</p>
+                    </div>
+                  </div>
+                  <Badge variant={statusBadge(m.membershipStatus)}>{m.membershipStatus}</Badge>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+                  <p className="text-xs text-slate-400">Joined {formatDate(m.membershipDate)}</p>
+                  <div className="flex items-center gap-1">
+                    <Link href={`/members/${m.id}`} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                      <Eye className="w-4 h-4" />
+                    </Link>
+                    <button onClick={() => { setEditMember(m); setShowModal(true); }} className="p-1.5 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => setDeleteId(m.id)} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200">
-                <tr>
-                  <th className="text-left px-4 py-3 font-semibold text-slate-600">Name</th>
-                  <th className="text-left px-4 py-3 font-semibold text-slate-600">Contact</th>
-                  <th className="text-left px-4 py-3 font-semibold text-slate-600">Gender</th>
-                  <th className="text-left px-4 py-3 font-semibold text-slate-600">Joined</th>
-                  <th className="text-left px-4 py-3 font-semibold text-slate-600">Status</th>
-                  <th className="text-right px-4 py-3 font-semibold text-slate-600">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {members.map((m) => (
-                  <tr key={m.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-xs shrink-0">
-                          {m.firstName[0]}{m.lastName[0]}
-                        </div>
-                        <span className="font-medium text-slate-900">
-                          {m.firstName} {m.lastName}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-slate-500">
-                      <div>{m.email || "—"}</div>
-                      <div className="text-xs">{m.phone || ""}</div>
-                    </td>
-                    <td className="px-4 py-3 text-slate-500">{m.gender || "—"}</td>
-                    <td className="px-4 py-3 text-slate-500">{formatDate(m.membershipDate)}</td>
-                    <td className="px-4 py-3">
-                      <Badge variant={statusBadge(m.membershipStatus)}>
-                        {m.membershipStatus}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1">
-                        <Link
-                          href={`/members/${m.id}`}
-                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Link>
-                        <button
-                          onClick={() => { setEditMember(m); setShowModal(true); }}
-                          className="p-1.5 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => setDeleteId(m.id)}
-                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
 
-      {/* Add/Edit Modal */}
-      <Modal
-        open={showModal}
-        onClose={() => { setShowModal(false); setEditMember(null); }}
-        title={editMember ? "Edit Member" : "Add New Member"}
-        size="lg"
-      >
+          {/* Desktop table — hidden below md */}
+          <div className="hidden md:block bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600">Name</th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600">Contact</th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600">Gender</th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600">Joined</th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600">Status</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {members.map((m) => (
+                    <tr key={m.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-xs shrink-0">
+                            {m.firstName[0]}{m.lastName[0]}
+                          </div>
+                          <span className="font-medium text-slate-900">{m.firstName} {m.lastName}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-slate-500">
+                        <div>{m.email || "—"}</div>
+                        <div className="text-xs">{m.phone || ""}</div>
+                      </td>
+                      <td className="px-4 py-3 text-slate-500">{m.gender || "—"}</td>
+                      <td className="px-4 py-3 text-slate-500">{formatDate(m.membershipDate)}</td>
+                      <td className="px-4 py-3">
+                        <Badge variant={statusBadge(m.membershipStatus)}>{m.membershipStatus}</Badge>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-1">
+                          <Link href={`/members/${m.id}`} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                            <Eye className="w-4 h-4" />
+                          </Link>
+                          <button onClick={() => { setEditMember(m); setShowModal(true); }} className="p-1.5 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => setDeleteId(m.id)} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
+
+      <Modal open={showModal} onClose={() => { setShowModal(false); setEditMember(null); }} title={editMember ? "Edit Member" : "Add New Member"} size="lg">
         <MemberForm
-          defaultValues={
-            editMember
-              ? {
-                  firstName: editMember.firstName,
-                  lastName: editMember.lastName,
-                  email: editMember.email ?? undefined,
-                  phone: editMember.phone ?? undefined,
-                  gender: editMember.gender ?? undefined,
-                  membershipStatus: editMember.membershipStatus,
-                  dateOfBirth: undefined,
-                  membershipDate: editMember.membershipDate
-                    ? editMember.membershipDate.split("T")[0]
-                    : undefined,
-                }
-              : undefined
-          }
+          defaultValues={editMember ? {
+            firstName: editMember.firstName,
+            lastName: editMember.lastName,
+            email: editMember.email ?? undefined,
+            phone: editMember.phone ?? undefined,
+            gender: editMember.gender ?? undefined,
+            membershipStatus: editMember.membershipStatus,
+            dateOfBirth: undefined,
+            membershipDate: editMember.membershipDate ? editMember.membershipDate.split("T")[0] : undefined,
+          } : undefined}
           onSubmit={handleSubmit}
           loading={loading}
         />
       </Modal>
 
-      {/* Delete Confirm Modal */}
-      <Modal
-        open={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        title="Confirm Delete"
-        size="sm"
-      >
-        <p className="text-slate-600 mb-6">
-          Are you sure you want to delete this member? This action cannot be undone.
-        </p>
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={() => setDeleteId(null)}
-            className="px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => deleteId && handleDelete(deleteId)}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition-colors"
-          >
-            Delete
-          </button>
+      <Modal open={!!deleteId} onClose={() => setDeleteId(null)} title="Confirm Delete" size="sm">
+        <p className="text-slate-600 mb-6">Are you sure you want to delete this member? This cannot be undone.</p>
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3">
+          <button onClick={() => setDeleteId(null)} className="px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 transition-colors">Cancel</button>
+          <button onClick={() => deleteId && handleDelete(deleteId)} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition-colors">Delete</button>
         </div>
       </Modal>
     </div>

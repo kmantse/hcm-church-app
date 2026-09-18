@@ -123,7 +123,7 @@ export default function FollowUpsPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       <PageHeader
         title="Follow-ups"
         description="Track outreach interactions and member feedback"
@@ -252,7 +252,7 @@ export default function FollowUpsPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center gap-1 shrink-0">
+                  <div className="flex items-center gap-1 shrink-0 self-start">
                     {f.status !== "COMPLETED" && f.status !== "CANCELLED" && (
                       <button
                         onClick={() => setFeedbackTarget(f)}

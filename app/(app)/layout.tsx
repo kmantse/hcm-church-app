@@ -19,9 +19,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthProvider user={user}>
-      <div className="flex h-full">
+      <div className="flex flex-col lg:flex-row h-full">
         <Sidebar />
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto min-h-0">
           {children}
         </main>
       </div>

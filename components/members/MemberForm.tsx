@@ -43,7 +43,7 @@ export function MemberForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField label="First Name" required error={errors.firstName?.message}>
           <input {...register("firstName")} className={inputClass} placeholder="John" />
         </FormField>
@@ -52,7 +52,7 @@ export function MemberForm({
         </FormField>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField label="Email" error={errors.email?.message}>
           <input {...register("email")} type="email" className={inputClass} placeholder="john@example.com" />
         </FormField>
@@ -61,7 +61,7 @@ export function MemberForm({
         </FormField>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField label="Gender">
           <select {...register("gender")} className={selectClass}>
             <option value="">Select gender</option>
@@ -74,7 +74,7 @@ export function MemberForm({
         </FormField>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField label="Marital Status">
           <select {...register("maritalStatus")} className={selectClass}>
             <option value="">Select status</option>
@@ -97,7 +97,7 @@ export function MemberForm({
         <input {...register("city")} className={inputClass} placeholder="Accra" />
       </FormField>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField label="Membership Date">
           <input {...register("membershipDate")} type="date" className={inputClass} />
         </FormField>
@@ -118,7 +118,7 @@ export function MemberForm({
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="w-full sm:w-auto bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
         >
           {loading ? "Saving..." : "Save Member"}
         </button>

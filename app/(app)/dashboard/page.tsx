@@ -72,7 +72,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       <PageHeader
         title="Dashboard"
         description={`Welcome back — ${new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}`}
@@ -212,10 +212,10 @@ export default function DashboardPage() {
             <Link
               key={href}
               href={href}
-              className={`flex flex-col items-center gap-2 p-4 rounded-xl transition-colors ${color}`}
+              className={`flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl transition-colors ${color}`}
             >
-              <Icon className="w-6 h-6" />
-              <span className="text-sm font-medium">{label}</span>
+              <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="text-xs sm:text-sm font-medium text-center leading-tight">{label}</span>
             </Link>
           ))}
         </div>
@@ -249,7 +249,7 @@ export default function DashboardPage() {
               badge: "bg-blue-100 text-blue-700",
             },
           ].map(({ key, label, description, url, color, badge }) => (
-            <div key={key} className={`flex items-center justify-between gap-4 rounded-xl border p-4 ${color}`}>
+            <div key={key} className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 rounded-xl border p-4 ${color}`}>
               <div className="min-w-0">
                 <p className="font-semibold text-sm">{label}</p>
                 <p className="text-xs opacity-75 mt-0.5">{description}</p>
@@ -257,7 +257,7 @@ export default function DashboardPage() {
                   {typeof window !== "undefined" ? window.location.origin : ""}{url}
                 </span>
               </div>
-              <div className="flex gap-2 shrink-0">
+              <div className="flex gap-2 shrink-0 self-start sm:self-auto">
                 <button
                   onClick={() => copyLink(key, url)}
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-current/20 rounded-lg text-xs font-medium hover:bg-white/80 transition-colors opacity-80"
